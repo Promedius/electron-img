@@ -4,31 +4,33 @@
 });
 
 window.onload = () => {
-  const { ipcRenderer } = require('electron');
-  const fs = require("fs");
+  setTimeout(() => {
+    const { ipcRenderer } = require('electron');
+    const fs = require("fs");
 
-  let outputPath = process.env["OUTPUT_PATH"];
+    let outputPath = process.env["OUTPUT_PATH"];
 
-  if (!outputPath) {
-    outputPath = "result.png";
-  }
-
-  const imgType = (() => {
-    if (outputPath.endsWith(".jpg") || outputPath.endsWith(".jpeg")) {
-      return "image/jpeg";
+    if (!outputPath) {
+      outputPath = "result.png";
     }
 
-    return "image/png";
-  })();
+    const imgType = (() => {
+      if (outputPath.endsWith(".jpg") || outputPath.endsWith(".jpeg")) {
+        return "image/jpeg";
+      }
 
-  const target = document.querySelector("#electron-img");
+      return "image/png";
+    })();
 
-  html2canvas(target, { scale: 1 }).then((canvas) => {
-    canvas.toBlob((blob) => {
-      blob.arrayBuffer().then((buffer) => {
-        fs.writeFileSync(outputPath, new Uint8Array(buffer));
-        ipcRenderer.send("done");
-      });
-    }, imgType);
-  });
+    const target = document.querySelector("#electron-img");
+
+    html2canvas(target, { scale: 1 }).then((canvas) => {
+      canvas.toBlob((blob) => {
+        blob.arrayBuffer().then((buffer) => {
+          fs.writeFileSync(outputPath, new Uint8Array(buffer));
+          ipcRenderer.send("done");
+        });
+      }, imgType);
+    });
+  }, 100);
 };

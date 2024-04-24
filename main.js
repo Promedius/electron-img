@@ -2,15 +2,24 @@ const { app, BrowserWindow } = require('electron');
 const { ipcMain } = require('electron')
 const path = require("path");
 
-if (!process.argv[3]) {
+const newArgvPos = process.argv.indexOf("--");
+
+if (newArgvPos < 0) {
+  console.log("double dash is required");
+  app.exit();
+}
+
+const newArgv = process.argv.slice(newArgvPos + 1);
+
+if (!newArgv[0]) {
   console.log("html path is required");
   app.exit();
 }
 
-const htmlPath = path.resolve(process.argv[3]);
+const htmlPath = path.resolve(newArgv[0]);
 
-if (process.argv[4]) {
-  process.env["OUTPUT_PATH"] = path.resolve(process.argv[4]);
+if (newArgv[1]) {
+  process.env["OUTPUT_PATH"] = path.resolve(newArgv[1]);
 }
 
 ipcMain.on("done", () => {
